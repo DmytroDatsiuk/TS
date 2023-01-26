@@ -6,4 +6,4 @@ let numd: number;
 if (typeof some === 'number') {
   numd = some;
   console.log(numd)
-}
+} 
