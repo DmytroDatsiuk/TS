@@ -10,4 +10,4 @@ export default function createCountrylist(country) {
       .join('');
   
     //   list.insertAdjacentHTML('beforeend', countryItem);
-    }
+    } 

@@ -1,49 +1,31 @@
-import './css/styles.css';
-import debounce from 'lodash.debounce';
-import { fetchCountries } from './fetchCountries';
-import Notiflix from 'notiflix';
-import createCountrylist from './function';
-import createCountryInfo from './createCountryInfp';
+// import {firebase-app} from 'firebase'
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { getAuth } from 'firebase/auth';
+// Follow this pattern to import other Firebase services
+// import { } from 'firebase/<service>';
 
-const DEBOUNCE_DELAY = 300;
+// TODO: Replace the following with your app's Firebase project configuration
+const firebaseConfig = {
+  apiKey: 'AIzaSyDeT-dGvxxhBoToHkpCqsX7i-ne2DJAg_c',
+  authDomain: 'filmo-8db62.firebaseapp.com',
+  projectId: 'filmo-8db62',
+  storageBucket: 'filmo-8db62.appspot.com',
+  messagingSenderId: '149168873978',
+};
 
-const input = document.querySelector('input#search-box');
-const list = document.querySelector('.country-list');
-const divInfo = document.querySelector('.country-info');
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth()
 
-input.addEventListener('input', debounce(onIput, DEBOUNCE_DELAY));
-
-function onIput(e) {
-  list.innerHTML = '';
-  divInfo.innerHTML = '';
-
-  const named = e.target.value;
-
-  const name = named.trim();
-
-  if (name === '') {
-    return;
-  }
-
-  fetchCountries(name)
-    .then(country => {
-      if (country.length > 10) {
-        Notiflix.Notify.info(
-          `Too many matches found. Please enter a more specific name.`
-        );
-        return;
-      }
-      
-      list.insertAdjacentHTML('beforeend', createCountrylist(country));
-
-      if (country.length === 1) {
-        divInfo.insertAdjacentHTML('beforeend', createCountryInfo(country));
-      }
-    })
-    .catch(error => {
-      console.log(error);
-      Notiflix.Notify.failure(`Oops, there is no country with that name`);
-    });
+// Get a list of cities from your database
+async function getCities(db) {
+  const citiesCol = collection(db, 'cities');
+  const citySnapshot = await getDocs(citiesCol);
+  const cityList = citySnapshot.docs.map(doc => doc.data());
+  return cityList;
 }
 
-
+console.log(app)
+console.log(db)
+// console.log(firebase-app())
