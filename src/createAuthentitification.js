@@ -31,80 +31,30 @@ export default class AccountMenegment {
       },
     };
   }
-
+  setEmailAndPassword(newEmail, newPassword) {
+    this.state.email = newEmail;
+    this.state.password = newPassword;
+  }
   online(bool) {
     this.state.isOnline = bool;
   }
-
-  auth() {
-    const app = initializeApp(this.state.firebaseConfig);
-    return getAuth(app);
-  }
-
-  checkStatusAcc() {
-    const authe = getAuth();
-    return onAuthStateChanged(authe, user => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        const uid = user.uid;
-        console.log('auth', user);
-        console.log(uid);
-        // ...
-      } else {
-        console.log('if not auth', user);
-        // User is signed out
-        // ...
-      }
-    });
-  }
-
-  db() {
-    const app = initializeApp(this.state.firebaseConfig);
-    return getDatabase(app);
-  }
-
- async readDataBas() {
-    const dbRef = ref(getDatabase());
-    const userName = this.userName()
-    const {user} = this.state
-    get(child(dbRef, `${userName}${user.uid}`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.val());
-      } else {
-        console.log("No data available");
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
-
-  }
-
-  writeToDataBase() {
-    const db = getDatabase();
-    const userName = this.userName();
-    const { email, isOnline, hasAccount, user } = this.state;
-    set(ref(db, userName + user.uid), {
-      username: email,
-      isOnline: isOnline,
-      hasAccount: hasAccount,
-    });
-  }
-
   userName() {
     const nameEmail = this.state.email.split('');
     // console.log(nameEmail)
     const idx = nameEmail.indexOf('@');
     return nameEmail.slice(0, idx).join('');
   }
-
-  setEmailAndPassword(newEmail, newPassword) {
-    this.state.email = newEmail;
-    this.state.password = newPassword;
-  }
-
   hasAccountTrueOrFalse(bool) {
     this.state.hasAccount = bool;
+  }
+
+  auth() {
+    const app = initializeApp(this.state.firebaseConfig);
+    return getAuth(app);
+  }
+  db() {
+    const app = initializeApp(this.state.firebaseConfig);
+    return getDatabase(app);
   }
 
   async createUser() {
@@ -133,5 +83,55 @@ export default class AccountMenegment {
   async deleteAccount() {
     const response = await deleteUser(this.state.user);
     return response;
+  }
+
+  async readDataBas() {
+    const dbRef = ref(getDatabase());
+    const userName = this.userName();
+    const { user } = this.state;
+    get(child(dbRef, `${userName}${user.uid}`))
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+        } else {
+          console.log('No data available');
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+  writeToDataBase() {
+    const db = getDatabase();
+    const userName = this.userName();
+    const { email, isOnline, hasAccount, user } = this.state;
+    set(ref(db, userName + user.uid), {
+      username: email,
+      isOnline: isOnline,
+      hasAccount: hasAccount,
+    });
+  }
+
+  checkStatusAcc() {
+    const authe = getAuth();
+    const refs = {
+      profile: document.querySelector('.profile'),
+      buttonBox: document.querySelector('.btnBox'),
+      buttonSignIn: document.querySelector('.signInButton'),
+      buttonSignUp: document.querySelector('.signUpButton'),
+      formSignUp: document.querySelector('.formSignUp'),
+      formSignIn: document.querySelector('.formSignIn'),
+      signOut: document.querySelector('.signOut'),
+      removeAccount: document.querySelector('.removeAccount'),
+    };
+    return onAuthStateChanged(authe, user => {
+      if (user) {
+        console.log(user);
+        refs.profile.classList.remove('visually-hidden');
+
+      } else {
+        refs.buttonBox.classList.remove('visually-hidden')
+      }
+    });
   }
 }

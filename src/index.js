@@ -20,19 +20,9 @@ refs.formSignIn.addEventListener('submit', onSignInFormSubmit);
 refs.signOut.addEventListener('click', onSignOutClick);
 refs.removeAccount.addEventListener('click', onRemoveClick);
 
-
-
-const checkStatusAcc = async () => {
-  try {
-    const readStatusOnDataBase = await authentification.readDataBas();
-    return readStatusOnDataBase;
-  } catch (error) {
-    console.log(error.code);
-    console.log(error.message);
-  }
-};
-// checkStatusAcc()
-// console.log(555)
+authentification.auth();
+authentification.db();
+authentification.checkStatusAcc();
 
 function onSignInButtonClick(e) {
   e.preventDefault();
@@ -70,15 +60,10 @@ function onSignUpFormSubmit(e) {
       refs.formSignUp.classList.add('visually-hidden');
       refs.buttonSignUp.classList.remove('signActive');
 
-      // authentification.auth();
-      // authentification.db();
       authentification.hasAccountTrueOrFalse(true);
       authentification.online(true);
       authentification.writeToDataBase();
-      checkStatusAcc();
       authentification.state.user = createAcc.user;
-      console.log(createAcc)
-
 
       return createAcc;
     } catch (error) {
@@ -87,8 +72,6 @@ function onSignUpFormSubmit(e) {
     }
   };
   signUpUser();
-
-
 
   refs.signOut.addEventListener('click', onSignOutClick);
   refs.removeAccount.addEventListener('click', onRemoveClick);
@@ -115,7 +98,7 @@ function onSignInFormSubmit(e) {
 
       authentification.writeToDataBase();
 
-      checkStatusAcc();
+      ;
 
       return loginUser;
     } catch (error) {
@@ -142,7 +125,7 @@ function onSignOutClick(e) {
   refs.removeAccount.removeEventListener('click', onRemoveClick);
   authentification.writeToDataBase();
 
-  checkStatusAcc();
+  ;
 }
 
 function onRemoveClick(e) {
@@ -155,7 +138,7 @@ function onRemoveClick(e) {
       refs.buttonBox.classList.remove('visually-hidden');
       refs.profile.classList.add('visually-hidden');
 
-      checkStatusAcc();
+      ;
 
       return removeUser;
     } catch (error) {
