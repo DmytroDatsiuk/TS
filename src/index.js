@@ -1,31 +1,173 @@
-// import {firebase-app} from 'firebase'
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
-import { getAuth } from 'firebase/auth';
-// Follow this pattern to import other Firebase services
-// import { } from 'firebase/<service>';
+import AccountMenegment from './createAuthentitification';
 
-// TODO: Replace the following with your app's Firebase project configuration
-const firebaseConfig = {
-  apiKey: 'AIzaSyDeT-dGvxxhBoToHkpCqsX7i-ne2DJAg_c',
-  authDomain: 'filmo-8db62.firebaseapp.com',
-  projectId: 'filmo-8db62',
-  storageBucket: 'filmo-8db62.appspot.com',
-  messagingSenderId: '149168873978',
+const authentification = new AccountMenegment();
+
+const refs = {
+  profile: document.querySelector('.profile'),
+  buttonBox: document.querySelector('.btnBox'),
+  buttonSignIn: document.querySelector('.signInButton'),
+  buttonSignUp: document.querySelector('.signUpButton'),
+  formSignUp: document.querySelector('.formSignUp'),
+  formSignIn: document.querySelector('.formSignIn'),
+  signOut: document.querySelector('.signOut'),
+  removeAccount: document.querySelector('.removeAccount'),
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth()
+refs.buttonSignIn.addEventListener('click', onSignInButtonClick);
+refs.buttonSignUp.addEventListener('click', onSignUpButtonClick);
+refs.formSignUp.addEventListener('submit', onSignUpFormSubmit);
+refs.formSignIn.addEventListener('submit', onSignInFormSubmit);
+refs.signOut.addEventListener('click', onSignOutClick);
+refs.removeAccount.addEventListener('click', onRemoveClick);
 
-// Get a list of cities from your database
-async function getCities(db) {
-  const citiesCol = collection(db, 'cities');
-  const citySnapshot = await getDocs(citiesCol);
-  const cityList = citySnapshot.docs.map(doc => doc.data());
-  return cityList;
+
+
+const checkStatusAcc = async () => {
+  try {
+    const readStatusOnDataBase = await authentification.readDataBas();
+    return readStatusOnDataBase;
+  } catch (error) {
+    console.log(error.code);
+    console.log(error.message);
+  }
+};
+// checkStatusAcc()
+// console.log(555)
+
+function onSignInButtonClick(e) {
+  e.preventDefault();
+
+  if (!refs.formSignUp.classList.value.includes('visually-hidden')) {
+    refs.formSignUp.classList.add('visually-hidden');
+    refs.buttonSignUp.classList.remove('signActive');
+  }
+  refs.formSignIn.classList.remove('visually-hidden');
+  refs.buttonSignIn.classList.add('signActive');
 }
 
-console.log(app)
-console.log(db)
-// console.log(firebase-app())
+function onSignUpButtonClick(e) {
+  e.preventDefault();
+  if (!refs.formSignIn.classList.value.includes('visually-hidden')) {
+    refs.formSignIn.classList.add('visually-hidden');
+    refs.buttonSignIn.classList.remove('signActive');
+  }
+  refs.formSignUp.classList.remove('visually-hidden');
+  refs.buttonSignUp.classList.add('signActive');
+}
+
+function onSignUpFormSubmit(e) {
+  e.preventDefault();
+  const { email, password } = e.currentTarget.elements;
+
+  authentification.setEmailAndPassword(email.value, password.value);
+
+  const signUpUser = async () => {
+    try {
+      const createAcc = await authentification.createUser();
+
+      refs.buttonBox.classList.add('visually-hidden');
+      refs.profile.classList.remove('visually-hidden');
+      refs.formSignUp.classList.add('visually-hidden');
+      refs.buttonSignUp.classList.remove('signActive');
+
+      // authentification.auth();
+      // authentification.db();
+      authentification.hasAccountTrueOrFalse(true);
+      authentification.online(true);
+      authentification.writeToDataBase();
+      checkStatusAcc();
+      authentification.state.user = createAcc.user;
+      console.log(createAcc)
+
+
+      return createAcc;
+    } catch (error) {
+      console.log(error.code);
+      console.log(error.message);
+    }
+  };
+  signUpUser();
+
+
+
+  refs.signOut.addEventListener('click', onSignOutClick);
+  refs.removeAccount.addEventListener('click', onRemoveClick);
+}
+
+function onSignInFormSubmit(e) {
+  e.preventDefault();
+
+  const { email, password } = e.currentTarget.elements;
+
+  authentification.setEmailAndPassword(email.value, password.value);
+
+  const signIn = async () => {
+    try {
+      const loginUser = await authentification.login();
+      authentification.state.user = loginUser.user;
+      authentification.online(true);
+
+      refs.buttonBox.classList.add('visually-hidden');
+      refs.profile.classList.remove('visually-hidden');
+      refs.formSignIn.classList.add('visually-hidden');
+      refs.buttonSignIn.classList.remove('signActive');
+      authentification.hasAccountTrueOrFalse(true);
+
+      authentification.writeToDataBase();
+
+      checkStatusAcc();
+
+      return loginUser;
+    } catch (error) {
+      console.log(error.code);
+      console.log(error.message);
+    }
+  };
+  signIn();
+
+  refs.signOut.addEventListener('click', onSignOutClick);
+  refs.removeAccount.addEventListener('click', onRemoveClick);
+}
+
+function onSignOutClick(e) {
+  e.preventDefault();
+
+  authentification.logOut();
+  authentification.online(false);
+
+  refs.buttonBox.classList.remove('visually-hidden');
+  refs.profile.classList.add('visually-hidden');
+
+  refs.signOut.removeEventListener('click', onSignOutClick);
+  refs.removeAccount.removeEventListener('click', onRemoveClick);
+  authentification.writeToDataBase();
+
+  checkStatusAcc();
+}
+
+function onRemoveClick(e) {
+  e.preventDefault();
+
+  const removeAccount = async () => {
+    try {
+      const removeUser = await authentification.deleteAccount();
+
+      refs.buttonBox.classList.remove('visually-hidden');
+      refs.profile.classList.add('visually-hidden');
+
+      checkStatusAcc();
+
+      return removeUser;
+    } catch (error) {
+      console.log(error.code);
+      console.log(error.message);
+    }
+  };
+  authentification.hasAccountTrueOrFalse(false);
+  authentification.online(false);
+  authentification.writeToDataBase();
+  removeAccount();
+
+  refs.signOut.removeEventListener('click', onSignOutClick);
+  refs.removeAccount.removeEventListener('click', onRemoveClick);
+}

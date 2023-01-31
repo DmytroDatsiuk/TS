@@ -11,10 +11,13 @@ body {
   color: #212121;
   line-height: 1.5;
 }
+ul {
+  list-style: none;
+}
 
 .head {
   padding: 25px;
-  background-color: blue;
+  background-color: rgba(45, 45, 223, 0.432);
   margin-bottom: 25px;
 }
 .button-box {
@@ -22,30 +25,85 @@ body {
   justify-content: end;
   gap: 10px;
 }
+.account {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  /* margin-left: auto; */
+}
+.account-item {
+  color: #212121;
+  cursor: pointer;
+}
+.account-item:hover {
+  color: #21212185;
+}
+
+.accountLogout {
+  color: #212121;
+  cursor: pointer;
+}
+.accountLogout:hover {
+  color: #21212185;
+}
+.accountDelete {
+  color: red;
+  cursor: pointer;
+}
+.accountDelete:hover {
+  color: rgba(255, 0, 0, 0.514);
+}
 
 .sign {
   display: inline-block;
   padding: 10px;
   border-radius: 15px;
   background-color: aqua;
+  cursor: pointer;
 }
-.box {
-  width: 200px;
+.sign:hover {
+  background-color: rgba(0, 255, 255, 0.5);
+}
+.signActive {
+  background-color: rgba(0, 255, 170, 0.548);
+}
+.form {
   margin-left: auto;
   margin-right: auto;
-
-  /* outline: 1px solid black; */
-}
-
-.login-block {
-  /* outline: 2px solid tomato; */
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 5px;
-  /* display: block; */
   display: flex;
   flex-direction: column;
-  gap: 30px;
-
-
+  /* outline: 1px solid tomato; */
+  width: 300px;
+  gap: 20px;
+  padding: 5px;
+  padding-bottom: 200px;
+  border: 2px solid #212121;
+  border-radius: 15px;
+}
+.form-input {
+  padding: 10px;
+  width: 100%;
+  border-radius: 5px;
+}
+.form-button {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15px;
+  background-color: #006b9c49;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
 }
