@@ -17,64 +17,81 @@
       <ul class="account profile visually-hidden">
         <li class="account-item">Account</li>
         <li>
-          <ul class="accountList ">
+          <ul class="accountList">
             <li class="accountLogout signOut">Log Out &#10154;&#9750;</li>
             <li class="accountDelete removeAccount">Delete Account</li>
           </ul>
         </li>
-        
       </ul>
     </header>
     <main>
-      <form class="formSignIn form visually-hidden">
-        <label>Sign In</label>
-        <label>
-          Email
-          <input
-            type="text"
-            placeholder="example@gmail.com"
-            name="email"
-            class="form-input"
-          />
-        </label>
-        <label>
-          Password
-          <input
-            type="password"
-            placeholder="&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;"
-            name="password"
-            class="form-input"
-          />
-        </label>
-        <button type="submit" id="login" class="form-button">Login</button>
-      </form>
+      <div class="form-box boxSignIn visually-hidden">
+        <form class="formSignIn form">
+          <label>Sign In</label>
+          <label>
+            Email
+            <input
+              type="text"
+              placeholder="example@gmail.com"
+              name="email"
+              class="form-input"
+            />
+          </label>
+          <label>
+            Password
+            <input
+              type="password"
+              placeholder="&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;"
+              name="password"
+              class="form-input"
+            />
+          </label>
+          <button type="submit" id="login" name="signIn" class="form-button">Login</button>
+          <button type="submit" class="form-button google" name="google">Google</button>
+          <button type="submit" class="form-button facebook" name="facebook">Facebook</button>
+          <button type="submit" class="form-button gitHub" name="gitHub">GitHub</button>
+        </form>
+        <!-- <p>Sign In with:</p>
+        <div class="social-sign">
+          <button type="submit" class="form-button google">Google</button>
+          <button type="submit" class="form-button facebook">Facebook</button>
+          <button type="submit" class="form-button gitHub">GitHub</button>
+        </div> -->
+      </div>
+      <div class="form-box boxSignUp visually-hidden">
+        <form class="formSignUp form">
+          <label>Sign Up</label>
+          <label>
+            Email
+            <input
+              type="text"
+              placeholder="example@gmail.com"
+              name="email"
+              class="form-input"
+            />
+          </label>
+          <label>
+            Password
+            <input
+              type="password"
+              placeholder="&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;"
+              name="password"
+              class="form-input"
+            />
+          </label>
+          <button type="submit" id="createAccount" name="signUp" class="form-button">
+            Create account
+          </button>
+          <button type="submit" class="form-button google" name="google">Google</button>
+          <button type="submit" class="form-button facebook" name="facebook">Facebook</button>
+          <button type="submit" class="form-button gitHub" name="gitHub">GitHub</button>
+        </form>
+        <!-- <p>Sign In with:</p> -->
+        <!-- <div class="social-sign"> -->
 
-      <form class="formSignUp form visually-hidden">
-        <label>Sign Up</label>
-        <label>
-          Email
-          <input
-            type="text"
-            placeholder="example@gmail.com"
-            name="email"
-            class="form-input"
-          />
-        </label>
-        <label>
-          Password
-          <input
-            type="password"
-            placeholder="&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;&#176;"
-            name="password"
-            class="form-input"
-          />
-        </label>
-        <button type="submit" id="createAccount" class="form-button">
-          Create account
-        </button>
-      </form>
+        <!-- </div> -->
+      </div>
     </main>
-
     <script src="index.js" type="module"></script>
   </body>
 </html>

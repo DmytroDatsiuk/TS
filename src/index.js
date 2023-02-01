@@ -1,3 +1,4 @@
+import { async } from '@firebase/util';
 import AccountMenegment from './createAuthentitification';
 
 const authentification = new AccountMenegment();
@@ -9,6 +10,8 @@ const refs = {
   buttonSignUp: document.querySelector('.signUpButton'),
   formSignUp: document.querySelector('.formSignUp'),
   formSignIn: document.querySelector('.formSignIn'),
+  boxSignIn: document.querySelector('.boxSignIn'),
+  boxSignUp: document.querySelector('.boxSignUp'),
   signOut: document.querySelector('.signOut'),
   removeAccount: document.querySelector('.removeAccount'),
 };
@@ -27,89 +30,57 @@ authentification.checkStatusAcc();
 function onSignInButtonClick(e) {
   e.preventDefault();
 
-  if (!refs.formSignUp.classList.value.includes('visually-hidden')) {
-    refs.formSignUp.classList.add('visually-hidden');
+  if (!refs.boxSignUp.classList.value.includes('visually-hidden')) {
+    refs.boxSignUp.classList.add('visually-hidden');
     refs.buttonSignUp.classList.remove('signActive');
   }
-  refs.formSignIn.classList.remove('visually-hidden');
+  refs.boxSignIn.classList.remove('visually-hidden');
   refs.buttonSignIn.classList.add('signActive');
 }
 
 function onSignUpButtonClick(e) {
   e.preventDefault();
-  if (!refs.formSignIn.classList.value.includes('visually-hidden')) {
-    refs.formSignIn.classList.add('visually-hidden');
+  if (!refs.boxSignIn.classList.value.includes('visually-hidden')) {
+    refs.boxSignIn.classList.add('visually-hidden');
     refs.buttonSignIn.classList.remove('signActive');
   }
-  refs.formSignUp.classList.remove('visually-hidden');
+  refs.boxSignUp.classList.remove('visually-hidden');
   refs.buttonSignUp.classList.add('signActive');
 }
 
 function onSignUpFormSubmit(e) {
   e.preventDefault();
-  const { email, password } = e.currentTarget.elements;
+
+  const { email, password, google, facebook, gitHub } =
+    e.currentTarget.elements;
 
   authentification.setEmailAndPassword(email.value, password.value);
 
-  const signUpUser = async () => {
-    try {
-      const createAcc = await authentification.createUser();
-
-      refs.buttonBox.classList.add('visually-hidden');
-      refs.profile.classList.remove('visually-hidden');
-      refs.formSignUp.classList.add('visually-hidden');
-      refs.buttonSignUp.classList.remove('signActive');
-
-      authentification.hasAccountTrueOrFalse(true);
-      authentification.online(true);
-      authentification.writeToDataBase();
-      authentification.state.user = createAcc.user;
-
-      return createAcc;
-    } catch (error) {
-      console.log(error.code);
-      console.log(error.message);
-    }
-  };
+  if (e.submitter === google) {
+    return googleLogin();
+  }
+  if (e.submitter === facebook) {
+    return facebookLogin();
+  }
+  if (e.submitter === gitHub) {
+    return gitHubLogin();
+  }
   signUpUser();
-
-  refs.signOut.addEventListener('click', onSignOutClick);
-  refs.removeAccount.addEventListener('click', onRemoveClick);
 }
 
 function onSignInFormSubmit(e) {
   e.preventDefault();
 
-  const { email, password } = e.currentTarget.elements;
+  const { email, password, google, facebook, gitHub } =
+    e.currentTarget.elements;
 
   authentification.setEmailAndPassword(email.value, password.value);
 
-  const signIn = async () => {
-    try {
-      const loginUser = await authentification.login();
-      authentification.state.user = loginUser.user;
-      authentification.online(true);
+  if (e.submitter === google) {
+    return googleLogin();
+  }
 
-      refs.buttonBox.classList.add('visually-hidden');
-      refs.profile.classList.remove('visually-hidden');
-      refs.formSignIn.classList.add('visually-hidden');
-      refs.buttonSignIn.classList.remove('signActive');
-      authentification.hasAccountTrueOrFalse(true);
-
-      authentification.writeToDataBase();
-
-      ;
-
-      return loginUser;
-    } catch (error) {
-      console.log(error.code);
-      console.log(error.message);
-    }
-  };
   signIn();
-
-  refs.signOut.addEventListener('click', onSignOutClick);
-  refs.removeAccount.addEventListener('click', onRemoveClick);
 }
 
 function onSignOutClick(e) {
@@ -124,8 +95,6 @@ function onSignOutClick(e) {
   refs.signOut.removeEventListener('click', onSignOutClick);
   refs.removeAccount.removeEventListener('click', onRemoveClick);
   authentification.writeToDataBase();
-
-  ;
 }
 
 function onRemoveClick(e) {
@@ -137,8 +106,6 @@ function onRemoveClick(e) {
 
       refs.buttonBox.classList.remove('visually-hidden');
       refs.profile.classList.add('visually-hidden');
-
-      ;
 
       return removeUser;
     } catch (error) {
@@ -153,4 +120,112 @@ function onRemoveClick(e) {
 
   refs.signOut.removeEventListener('click', onSignOutClick);
   refs.removeAccount.removeEventListener('click', onRemoveClick);
+}
+
+async function signUpUser() {
+  try {
+    const createAcc = await authentification.createUser();
+    console.log(createAcc.user);
+    authentification.state.user = createAcc.user;
+    authentification.online(true);
+    authentification.hasAccountTrueOrFalse(true);
+    authentification.writeToDataBase();
+
+    refs.profile.classList.remove('visually-hidden');
+    refs.buttonSignIn.classList.remove('signActive');
+    refs.buttonBox.classList.add('visually-hidden');
+    refs.boxSignIn.classList.add('visually-hidden');
+
+    refs.signOut.addEventListener('click', onSignOutClick);
+    refs.removeAccount.addEventListener('click', onRemoveClick);
+
+    return createAcc;
+  } catch (error) {
+    console.log(error.code);
+    console.log(error.message);
+  }
+}
+
+async function signIn() {
+  try {
+    const loginUser = await authentification.login();
+
+    authentification.state.user = loginUser.user;
+    authentification.online(true);
+    authentification.hasAccountTrueOrFalse(true);
+    authentification.writeToDataBase();
+
+    refs.profile.classList.remove('visually-hidden');
+    refs.buttonSignIn.classList.remove('signActive');
+    refs.buttonBox.classList.add('visually-hidden');
+    refs.boxSignIn.classList.add('visually-hidden');
+
+    refs.signOut.addEventListener('click', onSignOutClick);
+    refs.removeAccount.addEventListener('click', onRemoveClick);
+
+    return loginUser;
+  } catch (error) {
+    console.log(error.code);
+    console.log(error.message);
+  }
+}
+
+async function googleLogin() {
+  try {
+    const signWithGoogle = await authentification.loginWithGoogle();
+    authentification.state.user = signWithGoogle.user;
+
+    settingByLoginWithSocial();
+
+    return signWithGoogle;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function facebookLogin() {
+  try {
+    const signWithFacebook = await authentification.loginWithFacebook();
+    authentification.state.user = signWithFacebook.user;
+
+    settingByLoginWithSocial();
+
+    return signWithGoogle;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function gitHubLogin() {
+  try {
+    const signWithGitHub = await authentification.loginWithGitHub();
+    authentification.state.user = signWithGitHub.user;
+
+    settingByLoginWithSocial();
+
+    return signWithGoogle;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function settingByLoginWithSocial() {
+  authentification.online(true);
+  authentification.hasAccountTrueOrFalse(true);
+  authentification.writeToDataBase();
+
+  refs.profile.classList.remove('visually-hidden');
+  refs.buttonSignIn.classList.remove('signActive');
+  refs.buttonSignUp.classList.remove('signActive');
+
+  refs.buttonBox.classList.add('visually-hidden');
+
+  if (!refs.boxSignIn.classList.value.includes('visually-hidden')) {
+    refs.boxSignIn.classList.add('visually-hidden');
+  } else {
+    refs.boxSignUp.classList.add('visually-hidden');
+  }
+
+  refs.signOut.addEventListener('click', onSignOutClick);
+  refs.removeAccount.addEventListener('click', onRemoveClick);
 }

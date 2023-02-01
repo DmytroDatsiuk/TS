@@ -5,6 +5,9 @@ import {
   deleteUser,
   onAuthStateChanged,
   GoogleAuthProvider,
+  signInWithPopup,
+  FacebookAuthProvider,
+  GithubAuthProvider,
   getRedirectResult,
   signOut,
 } from 'firebase/auth';
@@ -77,9 +80,11 @@ export default class AccountMenegment {
 
     return response;
   }
+
   logOut() {
     return signOut(this.auth());
   }
+
   async deleteAccount() {
     const response = await deleteUser(this.state.user);
     return response;
@@ -104,6 +109,7 @@ export default class AccountMenegment {
   writeToDataBase() {
     const db = getDatabase();
     const userName = this.userName();
+
     const { email, isOnline, hasAccount, user } = this.state;
     set(ref(db, userName + user.uid), {
       username: email,
@@ -117,21 +123,41 @@ export default class AccountMenegment {
     const refs = {
       profile: document.querySelector('.profile'),
       buttonBox: document.querySelector('.btnBox'),
-      buttonSignIn: document.querySelector('.signInButton'),
-      buttonSignUp: document.querySelector('.signUpButton'),
-      formSignUp: document.querySelector('.formSignUp'),
-      formSignIn: document.querySelector('.formSignIn'),
-      signOut: document.querySelector('.signOut'),
-      removeAccount: document.querySelector('.removeAccount'),
     };
     return onAuthStateChanged(authe, user => {
       if (user) {
-        console.log(user);
+        // this.state.user = user;
+        // this.state.email = user.email;
         refs.profile.classList.remove('visually-hidden');
-
+        // this.online(true);
+        // this.hasAccountTrueOrFalse(true);
       } else {
-        refs.buttonBox.classList.remove('visually-hidden')
+        refs.buttonBox.classList.remove('visually-hidden');
       }
     });
+  }
+
+  async loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    const auth = getAuth();
+    const result = await signInWithPopup(auth, provider);
+    return result;
+
+  }
+
+  async loginWithFacebook() {
+    const provider = new FacebookAuthProvider();
+    const auth = getAuth();
+    const result = await signInWithPopup(auth, provider);
+    return result;
+
+  }
+
+  async loginWithGitHub() {
+    const provider = new GithubAuthProvider();
+    const auth = getAuth();
+    const result = await signInWithPopup(auth, provider);
+    return result;
+
   }
 }
