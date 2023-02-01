@@ -132,7 +132,8 @@ async function signUpUser() {
     authentification.writeToDataBase();
 
     refs.profile.classList.remove('visually-hidden');
-    refs.buttonSignIn.classList.remove('signActive');
+    refs.buttonSignUp.classList.remove('signActive');
+
     refs.buttonBox.classList.add('visually-hidden');
     refs.boxSignUp.classList.add('visually-hidden');
 
