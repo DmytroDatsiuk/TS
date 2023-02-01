@@ -134,12 +134,12 @@ async function signUpUser() {
     refs.profile.classList.remove('visually-hidden');
     refs.buttonSignIn.classList.remove('signActive');
     refs.buttonBox.classList.add('visually-hidden');
-    refs.boxSignIn.classList.add('visually-hidden');
+    refs.boxSignUp.classList.add('visually-hidden');
 
     refs.signOut.addEventListener('click', onSignOutClick);
     refs.removeAccount.addEventListener('click', onRemoveClick);
 
-    return createAcc;
+    return createAcc; 
   } catch (error) {
     console.log(error.code);
     console.log(error.message);
